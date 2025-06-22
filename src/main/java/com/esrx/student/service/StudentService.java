@@ -17,8 +17,7 @@ public class StudentService {
     StudentRepo studentRepo;
 
     public StudentDto addStudent(StudentDto studentDto){
-        StudentEntity studentEntity= Converter.convertDtoToEntity(studentDto);
-        studentRepo.save(studentEntity);
+        StudentEntity studentEntity= studentRepo.save(Converter.convertDtoToEntity(studentDto));
         return Converter.convertEntityToDto(studentEntity);
     }
 

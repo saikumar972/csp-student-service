@@ -5,6 +5,8 @@ import com.esrx.student.service.StudentService;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,27 +18,32 @@ public class StudentController {
     StudentService studentService;
 
     @PostMapping("/add")
-    public StudentDto addStudent(@RequestBody @Valid StudentDto studentDto){
-        return studentService.addStudent(studentDto);
+    public ResponseEntity<StudentDto> addStudent(@RequestBody @Valid StudentDto studentDto){
+        StudentDto studentDto1=studentService.addStudent(studentDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentDto1);
     }
 
     @PutMapping("/update")
-    public StudentDto updateStudentDetails(@RequestBody @Valid StudentDto studentDto){
-        return studentService.updateStudentDetails(studentDto);
+    public ResponseEntity<StudentDto>  updateStudentDetails(@RequestBody @Valid StudentDto studentDto){
+        StudentDto studentDto1=studentService.updateStudentDetails(studentDto);
+        return ResponseEntity.status(HttpStatus.OK).body(studentDto1);
     }
 
     @GetMapping("/id/{id}")
-    public StudentDto getStudentDetailsById(@PathVariable Long id){
-        return studentService.getStudentDetailsById(id);
+    public ResponseEntity<StudentDto> getStudentDetailsById(@PathVariable Long id){
+        StudentDto studentDto1=studentService.getStudentDetailsById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(studentDto1);
     }
 
-    @GetMapping("/add")
-    public List<StudentDto> studentList(){
-        return studentService.getStudentDetails();
+    @GetMapping("/all")
+    public ResponseEntity<List<StudentDto>> studentList(){
+        List<StudentDto> studentDtoList = studentService.getStudentDetails();
+        return ResponseEntity.status(HttpStatus.OK).body(studentDtoList);
     }
 
     @DeleteMapping("/id/{id}")
-    public String deleteStudentById(@PathVariable Long id){
-        return studentService.deleteStudentById(id);
+    public ResponseEntity<String> deleteStudentById(@PathVariable Long id){
+        String message=studentService.deleteStudentById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 }
