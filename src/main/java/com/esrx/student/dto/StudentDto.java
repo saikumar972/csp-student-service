@@ -16,7 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class StudentDto {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @NotBlank(message = "{student.name.notblank}")

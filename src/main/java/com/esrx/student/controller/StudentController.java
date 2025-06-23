@@ -1,6 +1,7 @@
 package com.esrx.student.controller;
 
 import com.esrx.student.dto.StudentDto;
+import com.esrx.student.dto.StudentInput;
 import com.esrx.student.service.StudentService;
 
 import jakarta.validation.Valid;
@@ -45,5 +46,11 @@ public class StudentController {
     public ResponseEntity<String> deleteStudentById(@PathVariable Long id){
         String message=studentService.deleteStudentById(id);
         return ResponseEntity.status(HttpStatus.OK).body(message);
+    }
+
+    @PostMapping("/fetch")
+    public ResponseEntity<StudentDto> getStudentDetailsByIdAndName(@RequestBody StudentInput studentInput){
+        StudentDto studentDto=studentService.getStudentDetailsByNameAndId(studentInput);
+        return ResponseEntity.status(HttpStatus.OK).body(studentDto);
     }
 }

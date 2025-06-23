@@ -1,5 +1,6 @@
-package com.esrx.student.exceptionHandler;
+package com.esrx.student.controller.exceptionHandler;
 
+import com.esrx.student.utility.InvalidIdAndNameException;
 import com.esrx.student.utility.InvalidStudentIdException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,5 +29,13 @@ public class CustomExceptionHandler {
     public String handleInvalidIdException(InvalidStudentIdException exception){
         return exception.getMessage();
     }
+
+    @ExceptionHandler(InvalidIdAndNameException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleInvalidIdAndNameException(InvalidIdAndNameException exception){
+        return exception.getMessage();
+    }
+
+
 
 }

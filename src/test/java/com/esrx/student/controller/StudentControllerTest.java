@@ -110,16 +110,29 @@ public class StudentControllerTest {
                 .andExpect(jsonPath("$.id").value(inputStudentDto.getId()))
                 .andExpect(jsonPath("$.course").value(inputStudentDto.getCourse()));
     }
+    @Nested
+    class DeleteStudentTestcases{
+        @Test
+        public void shouldDeleteStudent_whenValidIdProvided() throws Exception {
+            long input=1;
+            String expectedMessage="Student details with "+input+" is deleted successfully";
+            when(studentService.deleteStudentById(input)).thenReturn(expectedMessage);
+            mockMvc.perform(MockMvcRequestBuilders.delete("/student/id/"+input))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(expectedMessage));
 
-    @Test
-    public void shouldDeleteStudent_whenValidIdProvided() throws Exception {
-        long input=1;
-        String expectedMessage="Student details with "+input+" is deleted successfully";
-        when(studentService.deleteStudentById(input)).thenReturn(expectedMessage);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/student/id/"+input))
-                .andExpect(status().isOk())
-                .andExpect(content().string(expectedMessage));
+        }
+        @Test
+        public void shouldReturnBadRequest_whenDeletingInvalidStudentId() throws Exception {
+            long invalidId = 999L;
+            when(studentService.deleteStudentById(invalidId))
+                    .thenThrow(new InvalidStudentIdException("student id is invalid"));
 
+            mockMvc.perform(MockMvcRequestBuilders.delete("/student/id/" + invalidId))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string("student id is invalid"));
+        }
     }
+
 
 }

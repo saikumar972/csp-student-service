@@ -1,7 +1,9 @@
 package com.esrx.student.service;
 
+import com.esrx.student.utility.InvalidIdAndNameException;
 import com.esrx.student.dao.StudentRepo;
 import com.esrx.student.dto.StudentDto;
+import com.esrx.student.dto.StudentInput;
 import com.esrx.student.entity.StudentEntity;
 import com.esrx.student.utility.Converter;
 import com.esrx.student.utility.InvalidStudentIdException;
@@ -9,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -47,5 +48,12 @@ public class StudentService {
         StudentEntity studentEntity=studentRepo.findById(id).orElseThrow(()->new InvalidStudentIdException(id+" Student id is invalid"));
         studentRepo.deleteById(id);
         return "Student details with "+id+" is deleted successfully";
+    }
+    public StudentDto getStudentDetailsByNameAndId(StudentInput studentInput){
+            StudentEntity studentEntity=studentRepo.findStudentByNameAndId(studentInput.getId(),studentInput.getName());
+            if(studentEntity==null){
+                throw new InvalidIdAndNameException("Id and Name were invalid");
+            }
+            return Converter.convertEntityToDto(studentEntity);
     }
 }
