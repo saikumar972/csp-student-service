@@ -1,4 +1,4 @@
-package com.esrx.student.controller.exceptionHandler;
+package com.esrx.student.exceptionHandler;
 
 import com.esrx.student.utility.InvalidIdAndNameException;
 import com.esrx.student.utility.InvalidStudentIdException;
