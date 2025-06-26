@@ -34,7 +34,7 @@ public class StudentControllerTest {
     class AddStudentTests {
         @Test
         public void shouldCreateStudent_whenValidInputProvided() throws Exception{
-            String fileName="StudentInputDetails.json";
+            String fileName= "StudentResponse.json";
             objectMapper.registerModule(new JavaTimeModule());
             String jsonInput= JsonConverter.convertToJson(fileName);
             StudentDto inputStudentDto=objectMapper.readValue(jsonInput, StudentDto.class);
@@ -97,7 +97,7 @@ public class StudentControllerTest {
 
     @Test
     public void shouldUpdateStudentDetails_whenValidInputProvided() throws Exception {
-        String fileName="StudentInputDetails.json";
+        String fileName= "StudentResponse.json";
         objectMapper.registerModule(new JavaTimeModule());
         String jsonInput= JsonConverter.convertToJson(fileName);
         StudentDto inputStudentDto=objectMapper.readValue(jsonInput, StudentDto.class);
