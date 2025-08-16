@@ -4,13 +4,12 @@ import com.esrx.student.dao.StudentRepo;
 import com.esrx.student.dto.StudentDto;
 import com.esrx.student.entity.StudentEntity;
 import com.esrx.student.utility.Converter;
-import com.esrx.student.utility.InvalidStudentIdException;
+import com.esrx.student.utility.CustomStudentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -87,7 +86,7 @@ public class StudentServiceTest {
             StudentDto dto = new StudentDto();
             dto.setId(99L);
             when(studentRepo.findById(99L)).thenReturn(Optional.empty());
-            assertThrows(InvalidStudentIdException.class,
+            assertThrows(CustomStudentException.class,
                     () -> studentService.updateStudentDetails(dto));
         }
     }
@@ -110,7 +109,7 @@ public class StudentServiceTest {
         public void exceptionDeleteTest(){
             long id=99L;
             when(studentRepo.findById(id)).thenReturn(Optional.empty());
-            assertThrows(InvalidStudentIdException.class,()->studentService.deleteStudentById(id));
+            assertThrows(CustomStudentException.class,()->studentService.deleteStudentById(id));
         }
     }
 

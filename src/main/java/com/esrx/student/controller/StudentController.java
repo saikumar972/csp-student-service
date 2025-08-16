@@ -45,7 +45,7 @@ public class StudentController {
     @DeleteMapping("/id/{id}")
     public ResponseEntity<String> deleteStudentById(@PathVariable Long id){
         String message=studentService.deleteStudentById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(message);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(message);
     }
 
     @PostMapping("/fetch")

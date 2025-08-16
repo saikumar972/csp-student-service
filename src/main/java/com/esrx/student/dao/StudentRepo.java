@@ -1,6 +1,5 @@
 package com.esrx.student.dao;
 
-import com.esrx.student.dto.StudentInput;
 import com.esrx.student.entity.StudentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

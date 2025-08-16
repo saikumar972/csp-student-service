@@ -3,7 +3,7 @@ package com.esrx.student.controller;
 import com.esrx.student.dto.StudentDto;
 import com.esrx.student.service.StudentService;
 import com.esrx.student.util.JsonConverter;
-import com.esrx.student.utility.InvalidStudentIdException;
+import com.esrx.student.utility.CustomStudentException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -75,7 +75,7 @@ public class StudentControllerTest {
         @ParameterizedTest
         @ValueSource(longs = {0, -1, 999})
         public void shouldReturnBadRequest_whenInvalidIdProvided(long invalidInput) throws Exception{
-            when(studentService.getStudentDetailsById(invalidInput)).thenThrow(new InvalidStudentIdException("student id is invalid"));
+            when(studentService.getStudentDetailsById(invalidInput)).thenThrow(new CustomStudentException("student id is invalid"));
             mockMvc.perform(MockMvcRequestBuilders.get("/student/id/"+invalidInput))
                     .andExpect(status().isBadRequest())
                     .andExpect(content().string("student id is invalid"));
@@ -126,7 +126,7 @@ public class StudentControllerTest {
         public void shouldReturnBadRequest_whenDeletingInvalidStudentId() throws Exception {
             long invalidId = 999L;
             when(studentService.deleteStudentById(invalidId))
-                    .thenThrow(new InvalidStudentIdException("student id is invalid"));
+                    .thenThrow(new CustomStudentException("student id is invalid"));
 
             mockMvc.perform(MockMvcRequestBuilders.delete("/student/id/" + invalidId))
                     .andExpect(status().isBadRequest())
