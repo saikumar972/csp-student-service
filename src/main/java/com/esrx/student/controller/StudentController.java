@@ -53,4 +53,10 @@ public class StudentController {
         StudentDto studentDto=studentService.getStudentDetailsByNameAndId(studentInput);
         return ResponseEntity.status(HttpStatus.OK).body(studentDto);
     }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<StudentDto> getStudentByName(@PathVariable String name){
+        StudentDto studentDto1=studentService.getStudentByName(name);
+        return ResponseEntity.status(HttpStatus.OK).body(studentDto1);
+    }
 }

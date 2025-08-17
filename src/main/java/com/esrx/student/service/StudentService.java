@@ -55,4 +55,9 @@ public class StudentService {
             }
             return Converter.convertEntityToDto(studentEntity);
     }
+
+    public StudentDto getStudentByName(String name) {
+        StudentEntity studentEntity=studentRepo.findByName(name).orElseThrow(()->new CustomStudentException(name+" Student name is invalid"));
+        return Converter.convertEntityToDto(studentEntity);
+    }
 }
