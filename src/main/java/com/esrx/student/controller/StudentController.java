@@ -27,7 +27,7 @@ public class StudentController {
     @PutMapping("/update")
     public ResponseEntity<StudentDto>  updateStudentDetails(@RequestBody @Valid StudentDto studentDto){
         StudentDto studentDto1=studentService.updateStudentDetails(studentDto);
-        return ResponseEntity.status(HttpStatus.OK).body(studentDto1);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(studentDto1);
     }
 
     @GetMapping("/id/{id}")

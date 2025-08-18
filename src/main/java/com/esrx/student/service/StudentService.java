@@ -6,6 +6,9 @@ import com.esrx.student.dto.StudentInput;
 import com.esrx.student.entity.StudentEntity;
 import com.esrx.student.utility.Converter;
 import com.esrx.student.utility.CustomStudentException;
+
+import io.micrometer.common.lang.NonNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,8 +46,8 @@ public class StudentService {
         return studentList;
     }
 
-    public String deleteStudentById(Long id){
-        StudentEntity studentEntity=studentRepo.findById(id).orElseThrow(()->new CustomStudentException(id+" Student id is invalid"));
+    public String deleteStudentById(@NonNull Long id){
+        studentRepo.findById(id).orElseThrow(()->new CustomStudentException(id+" Student id is invalid"));
         studentRepo.deleteById(id);
         return "Student details with "+id+" is deleted successfully";
     }
