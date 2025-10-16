@@ -59,4 +59,33 @@ public class StudentController {
         StudentDto studentDto1=studentService.getStudentByName(name);
         return ResponseEntity.status(HttpStatus.OK).body(studentDto1);
     }
+
+    @GetMapping("/nameV2/{name}")
+    public ResponseEntity<?> getStudentByNameV2(@PathVariable String name) {
+
+        if (name.equalsIgnoreCase("retry429")) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body("Server Side 429");
+        }
+        else if (name.equalsIgnoreCase("retry408")) {
+            return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+                    .body("Server side 408");
+        }
+        else if(name.equalsIgnoreCase("circuitBreaker1")){
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                    .body("bad gateway");
+        }
+        else if(name.equalsIgnoreCase("circuitBreaker2")){
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body("Service not found");
+        }
+        else if(name.equalsIgnoreCase("circuitBreaker3")){
+            return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT)
+                    .body("gateway timeout");
+        }
+
+        StudentDto studentDto1 = studentService.getStudentByName(name);
+        return ResponseEntity.ok(studentDto1);
+    }
+
 }
