@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/student")
@@ -86,6 +87,50 @@ public class StudentController {
 
         StudentDto studentDto1 = studentService.getStudentByName(name);
         return ResponseEntity.ok(studentDto1);
+    }
+
+    @GetMapping("/nameV3/{name}")
+    public ResponseEntity<?> getStudentByNameV3(
+            @PathVariable String name,
+            @RequestHeader Map<String, String> headers
+    )
+    {
+        System.out.println("The headers passed in the request is "+headers);
+        // ✅ Validate correlationId first
+        if (!headers.containsKey("correlationId".toLowerCase())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Missing required header: correlationId");
+        }
+
+        // ✅ Normalize name to lowercase for easier comparison
+        String lowerName = name.toLowerCase();
+
+        switch (lowerName) {
+            case "retry429":
+                return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                        .body("Server Side 429 - Too Many Requests");
+
+            case "retry408":
+                return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+                        .body("Server Side 408 - Request Timeout");
+
+            case "circuitbreaker1":
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                        .body("Server Side 502 - Bad Gateway");
+
+            case "circuitbreaker2":
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                        .body("Server Side 503 - Service Unavailable");
+
+            case "circuitbreaker3":
+                return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT)
+                        .body("Server Side 504 - Gateway Timeout");
+
+            default:
+                // ✅ Normal path — fetch actual student data
+                StudentDto studentDto = studentService.getStudentByName(name);
+                return ResponseEntity.ok(studentDto);
+        }
     }
 
 }
