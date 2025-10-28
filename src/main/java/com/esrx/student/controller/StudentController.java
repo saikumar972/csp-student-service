@@ -4,6 +4,7 @@ import com.esrx.student.dto.StudentDto;
 import com.esrx.student.dto.StudentInput;
 import com.esrx.student.service.StudentService;
 
+import com.esrx.student.utility.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -91,6 +92,43 @@ public class StudentController {
 
     @GetMapping("/nameV3/{name}")
     public ResponseEntity<?> getStudentByNameV3(
+            @PathVariable String name,
+            @RequestHeader Map<String, String> headers
+    ) {
+        System.out.println("The headers passed in the request is " + headers);
+
+        // 🔒 Validate correlationId first
+        if (!headers.containsKey("correlationid")) {
+            throw new CustomStudentException("Missing required header: correlationId");
+        }
+
+        String lowerName = name.toLowerCase();
+
+        switch (lowerName) {
+            case "retry429":
+                throw new TooManyRequestsException("Server Side 429 - Too Many Requests");
+
+            case "retry408":
+                throw new RequestTimeoutException("Server Side 408 - Request Timeout");
+
+            case "circuitbreaker1":
+                throw new BadGatewayException("Server Side 502 - Bad Gateway");
+
+            case "circuitbreaker2":
+                throw new ServiceUnavailableException("Server Side 503 - Service Unavailable");
+
+            case "circuitbreaker3":
+                throw new GatewayTimeoutException("Server Side 504 - Gateway Timeout");
+
+            default:
+                StudentDto studentDto = studentService.getStudentByName(name);
+                return ResponseEntity.ok(studentDto);
+        }
+    }
+
+
+    @GetMapping("/nameV4/{name}")
+    public ResponseEntity<?> getStudentByNameV4(
             @PathVariable String name,
             @RequestHeader Map<String, String> headers
     )
