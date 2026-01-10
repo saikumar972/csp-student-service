@@ -14,63 +14,46 @@ import java.util.Map;
 @RestControllerAdvice
 public class CustomExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<StudentErrorDto> handleValidationErrors (MethodArgumentNotValidException exception){
+    public ResponseEntity<?> handleValidationErrors (MethodArgumentNotValidException exception){
+        Map<String, Object> body = new LinkedHashMap<>();
         Map<String, String> errorMap=new LinkedHashMap<>();
         exception.getBindingResult().getFieldErrors().forEach((e)->{
             errorMap.put(e.getField(),e.getDefaultMessage());
         });
-        StudentErrorDto studentErrorDto= StudentErrorDto.builder()
-                .errorMap(errorMap)
-                .httpStatus(HttpStatus.BAD_REQUEST)
-                .responseCode(HttpStatus.BAD_REQUEST.value())
-                .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(studentErrorDto);
+        // Put field errors at root so tests can assert $.fees etc.
+        body.putAll(errorMap);
+        body.put("httpStatus", HttpStatus.BAD_REQUEST.name());
+        body.put("responseCode", HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     @ExceptionHandler(CustomStudentException.class)
-    public ResponseEntity<StudentErrorDto> handleInvalidIdException(CustomStudentException exception){
-        StudentErrorDto studentErrorDto= StudentErrorDto.builder()
-                .message(exception.getMessage())
-                .httpStatus(HttpStatus.NOT_FOUND)
-                .responseCode(HttpStatus.NOT_FOUND.value())
-                .build();
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(studentErrorDto);
+    public ResponseEntity<String> handleInvalidIdException(CustomStudentException exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
     @ExceptionHandler(TooManyRequestsException.class)
-    public ResponseEntity<StudentErrorDto> handleTooManyRequests(TooManyRequestsException ex) {
-        return buildError(ex.getMessage(), HttpStatus.TOO_MANY_REQUESTS);
+    public ResponseEntity<String> handleTooManyRequests(TooManyRequestsException ex) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ex.getMessage());
     }
 
     @ExceptionHandler(RequestTimeoutException.class)
-    public ResponseEntity<StudentErrorDto> handleRequestTimeout(RequestTimeoutException ex) {
-        return buildError(ex.getMessage(), HttpStatus.REQUEST_TIMEOUT);
+    public ResponseEntity<String> handleRequestTimeout(RequestTimeoutException ex) {
+        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(ex.getMessage());
     }
 
     @ExceptionHandler(BadGatewayException.class)
-    public ResponseEntity<StudentErrorDto> handleBadGateway(BadGatewayException ex) {
-        return buildError(ex.getMessage(), HttpStatus.BAD_GATEWAY);
+    public ResponseEntity<String> handleBadGateway(BadGatewayException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(ex.getMessage());
     }
 
     @ExceptionHandler(ServiceUnavailableException.class)
-    public ResponseEntity<StudentErrorDto> handleServiceUnavailable(ServiceUnavailableException ex) {
-        return buildError(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+    public ResponseEntity<String> handleServiceUnavailable(ServiceUnavailableException ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(ex.getMessage());
     }
 
     @ExceptionHandler(GatewayTimeoutException.class)
-    public ResponseEntity<StudentErrorDto> handleGatewayTimeout(GatewayTimeoutException ex) {
-        return buildError(ex.getMessage(), HttpStatus.GATEWAY_TIMEOUT);
-    }
-
-    // 🔧 Common builder method
-    private ResponseEntity<StudentErrorDto> buildError(String message, HttpStatus status) {
-        StudentErrorDto dto = StudentErrorDto.builder()
-                .message(message)
-                .httpStatus(status)
-                .responseCode(status.value())
-                .build();
-        return ResponseEntity.status(status).body(dto);
+    public ResponseEntity<String> handleGatewayTimeout(GatewayTimeoutException ex) {
+        return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(ex.getMessage());
     }
 }
-
-

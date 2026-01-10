@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -29,7 +30,7 @@ public class StudentServiceTest {
     @InjectMocks
     StudentService studentService;
 
-    @MockitoBean
+    @Mock
     StudentRepo studentRepo;
 
     private  List<StudentEntity> students;
@@ -121,7 +122,35 @@ public class StudentServiceTest {
         assertEquals(expected.size(),actual.size());
     }
 
+    @Test
+    public void getStudentDetailsByNameAndId_happyPath() {
+        StudentEntity studentEntityInput = students.get(1);
+        when(studentRepo.findStudentByNameAndId(2L, "Sneha Reddy")).thenReturn(studentEntityInput);
+        StudentDto output = studentService.getStudentDetailsByNameAndId(new com.esrx.student.dto.StudentInput(2L, "Sneha Reddy"));
+        assertEquals(2L, output.getId());
+        assertEquals("Sneha Reddy", output.getName());
+    }
+
+    @Test
+    public void getStudentDetailsByNameAndId_notFound_shouldThrow() {
+        when(studentRepo.findStudentByNameAndId(99L, "Unknown")).thenReturn(null);
+        com.esrx.student.dto.StudentInput input = new com.esrx.student.dto.StudentInput(99L, "Unknown");
+        assertThrows(CustomStudentException.class, () -> studentService.getStudentDetailsByNameAndId(input));
+    }
+
+    @Test
+    public void getStudentByName_happyPath() {
+        StudentEntity studentEntityInput = students.get(2);
+        when(studentRepo.findByName("Karan Joshi")).thenReturn(Optional.of(studentEntityInput));
+        StudentDto output = studentService.getStudentByName("Karan Joshi");
+        assertEquals("Karan Joshi", output.getName());
+        assertEquals(3L, output.getId());
+    }
+
+    @Test
+    public void getStudentByName_notFound_shouldThrow() {
+        when(studentRepo.findByName("Nobody")).thenReturn(Optional.empty());
+        assertThrows(CustomStudentException.class, () -> studentService.getStudentByName("Nobody"));
+    }
+
 }
-
-
-

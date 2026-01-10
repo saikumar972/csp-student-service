@@ -29,7 +29,7 @@ public class StudentController {
     @PutMapping("/update")
     public ResponseEntity<StudentDto>  updateStudentDetails(@RequestBody @Valid StudentDto studentDto){
         StudentDto studentDto1=studentService.updateStudentDetails(studentDto);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(studentDto1);
+        return ResponseEntity.status(HttpStatus.OK).body(studentDto1);
     }
 
     @GetMapping("/id/{id}")
@@ -47,7 +47,7 @@ public class StudentController {
     @DeleteMapping("/id/{id}")
     public ResponseEntity<String> deleteStudentById(@PathVariable Long id){
         String message=studentService.deleteStudentById(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(message);
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
     @PostMapping("/fetch")
