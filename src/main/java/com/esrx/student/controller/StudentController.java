@@ -6,6 +6,7 @@ import com.esrx.student.service.StudentService;
 
 import com.esrx.student.utility.*;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/student")
+@RequiredArgsConstructor
 public class StudentController {
-    @Autowired
-    StudentService studentService;
+
+    private final StudentService studentService;
 
     @PostMapping("/add")
     public ResponseEntity<StudentDto> addStudent(@RequestBody @Valid StudentDto studentDto){
